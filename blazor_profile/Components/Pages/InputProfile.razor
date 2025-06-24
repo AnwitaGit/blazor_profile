@@ -1,0 +1,57 @@
+﻿@page "/input-profile"
+@inject HttpClient Http
+@using blazor_profile.Domain;
+@using blazor_profile.Controllers
+@rendermode InteractiveServer
+
+<PageTitle>Profile Information</PageTitle>
+
+<h1>Please fill the menus below to input your profile </h1>
+
+<h3> Id </h3>
+<input type="text" @bind-value=profile.Id/>
+<h3> First Name</h3>
+<input type="text" @bind-value=profile.FirstName/> 
+
+
+<h3>Last Name</h3>
+<input type="text" @bind-value=profile.LastName /> 
+
+<h3> Phone Number</h3>
+<input type="text" @bind-value=profile.PhoneNumber/>
+
+<h3> Email Address</h3>
+<input type="text" @bind-value=profile.Email/>
+<button class="btn btn-primary" @onclick=Create>Submit</button>
+
+@if (!string.IsNullOrEmpty(creationMessage))
+{
+    <div class="alert alert-info">@creationMessage</div>
+}
+
+
+@code {
+    Profile profile = new(){
+        Id = 0, 
+        FirstName = "", 
+        LastName = "", 
+        PhoneNumber = "", 
+        Email = ""
+        
+    }; 
+    string? creationMessage;
+
+
+    private async Task Create()
+    {
+        Console.WriteLine("sending create request"); 
+        var response = await Http.PostAsJsonAsync("api/profile/CreateProfile", profile);
+
+       
+            var message = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Response: " + message);
+            creationMessage = message;
+        }
+        
+    
+}

@@ -1,0 +1,57 @@
+﻿@page "/update-profile"
+@rendermode InteractiveServer
+
+@using blazor_profile.Domain
+@inject HttpClient Http 
+<h3>UpdateProfile</h3>
+
+
+<h1>Please update your profile </h1>
+
+<h3>Id </h3>
+<input type="text" @bind-value=profile.Id/>
+<h3> First Name</h3>
+<input type="text" @bind-value=profile.FirstName/>
+
+<h3>Last Name</h3>
+<input type="text" @bind-value=profile.LastName />
+
+<h3> Phone Number</h3>
+<input type="text" @bind-value=profile.PhoneNumber/>
+
+<h3> Email Address</h3>
+<input type="text" @bind-value=profile.Email/>
+<button class="btn btn-primary" @onclick=Update> Submit</button>
+
+@if (!string.IsNullOrEmpty(updateMessage))
+{
+	<div class="alert alert-info">@updateMessage</div>
+}
+
+
+@code {
+
+	Profile profile = new(){
+	Id = 0, 
+	FirstName = "", 
+	LastName = "", 
+	PhoneNumber = "", 
+	Email = ""
+	};				
+	string? updateMessage;
+
+
+
+	private async Task Update()
+	{			
+
+	
+			var response = await Http.PutAsJsonAsync("api/profile/UpdateProfile", profile);
+
+			var message = await response.Content.ReadAsStringAsync();
+			Console.WriteLine("Response: " + message);
+			updateMessage = message;
+
+
+	}
+}
